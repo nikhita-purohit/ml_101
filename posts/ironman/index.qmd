@@ -1,0 +1,232 @@
+---
+title: "ironman"
+author: "nikki"
+format: html
+editor: visual
+---
+
+![](images/clipboard-3859889255.png)
+
+```{r}
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggformula)
+library(janitor)
+library(naniar)
+library(visdat)
+```
+
+```{r}
+list.files(pattern=".csv")
+```
+
+```{r}
+iron <- readr::read_csv("../../data/ironman_lake_placid_female_2022.csv", show_col_types = FALSE)
+```
+
+```{r}
+dim(iron)
+str(iron)
+```
+
+```{r}
+head(iron)
+tail(iron)
+```
+
+```{r}
+names(iron)
+```
+
+```{r}
+visdat::vis_dat(iron, sort_type = TRUE)
+```
+
+```{r}
+iron_modified <- iron %>% tidyr::drop_na()
+visdat::vis_dat(iron_modified, sort_type = TRUE)
+```
+
+```{r}
+iron_modified <- iron %>%
+  dplyr::mutate(across(where(is.character), as.factor)) %>% 
+  relocate(where(is.factor))
+glimpse(iron_modified)
+```
+
+```{r}
+iron_modified %>%
+  DT::datatable(
+    style = "default",
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: left; color: black; font-size: 100%;", "Lake Placid Women’s Ironman Triathlon Dataset (Clean)"
+    ),
+    options = list(pageLength = 10, autoWidth = TRUE)
+  ) %>%
+  DT::formatStyle(
+    columns = names(iron_modified),
+    fontFamily = "Arial",
+    fontSize = "12px",
+  )
+```
+
+## **Data Dictionary**
+
+**Quantitative Data**
+
+1.  Bib (int): registration number of each runner used for identification
+2.  Division.Rank (int): Within the divisions, the place each runner has obtained over all races
+3.  Overall.Time (dbl): The total time it took to complete the Ironman in minutes
+4.  Overall.Rank (int): The runner’s finishing place for that particular triathlon
+5.  Swim.Time (dbl): The time in minutes it took to complete the swimming portion
+6.  Swim.Rank (int): The place the runner finished for the swim portion
+7.  Bike.Time (dbl): The time in minutes it took to complete the biking portion
+8.  Bike.Rank (int): The place the runner finished for the bike portion
+9.  Run.Time (dbl): The time in minutes it took to complete the running portion
+10. Run.Rank (int): The place the runner finished for the running portion
+11. Year (int): The year when the mentioned participant ran
+
+**Qualitative Data**
+
+1.  Name (fct): The participant’s name
+2.  Country (fct): What country the participant is from
+3.  Gender (fct): The participant’s gender
+4.  Division (fct): The age range or membership a runner is in
+5.  Finish.Status (fct): States whether someone completed the Ironman successfully
+6.  Location (fct): Where the Ironman takes place
+
+```{r}
+summary(iron)
+```
+
+```{r}
+iron %>%
+  gf_histogram(~ Overall.Time,
+               fill = "cyan4",
+               bins = 20) %>%
+  gf_labs(title = "Ironman Completion Times",
+          x = "Time (minutes)",
+          y = "Number of People") %>%
+  gf_theme()
+
+iron %>%
+  gf_histogram(~ Swim.Time,
+               fill = "blue",
+               bins = 20) %>%
+  gf_labs(title = "Swim Completion Times",
+          x = "Time (minutes)",
+          y = "Number of People") %>%
+  gf_theme()
+
+iron %>%
+  gf_histogram(~ Bike.Time,
+               fill = "palevioletred",
+               bins = 20) %>%
+  gf_labs(title = "Bike Completion Times",
+          x = "Time (minutes)",
+          y = "Number of People") %>%
+  gf_theme()
+
+iron %>%
+  gf_histogram(~ Run.Time,
+               fill = "orange",
+               bins = 20) %>%
+  gf_labs(title = "Run Completion Times",
+          x = "Time (minutes)",
+          y = "Number of People") %>%
+  gf_theme()
+```
+
+```{r}
+iron_modified %>%
+gf_point(Overall.Time ~ Swim.Time, data = iron_modified, color = 'lightgreen', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Overall Ironman Time vs Swim Time",
+          x = "Swim Time (minutes)",
+          y = "Overall Time (minutes)")
+
+iron_modified %>%
+gf_point(Overall.Time ~ Run.Time, data = iron_modified, color = 'lightblue', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Overall Ironman Time vs Run Time",
+          x = "Run Time (minutes)",
+          y = "Overall Time (minutes)")
+
+iron_modified %>%
+gf_point(Overall.Time ~ Bike.Time, data = iron_modified, color = 'lightpink', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Overall Ironman Time vs Bike Time",
+          x = "Bike Time (minutes)",
+          y = "Overall Time (minutes)")
+
+iron_modified %>%
+gf_point(Run.Time ~ Bike.Time, data = iron_modified, color = 'slategrey', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Bike Time vs Run Time",
+          x = "Bike Time (minutes)",
+          y = "Run Time (minutes)")
+
+iron_modified %>%
+gf_point(Run.Time ~ Swim.Time, data = iron_modified, color = 'orange', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Run Time vs Swim Time",
+          x = "Swim Time (minutes)",
+          y = "Run Time (minutes)")
+
+iron_modified %>%
+gf_point(Bike.Time ~ Swim.Time, data = iron_modified, color = 'purple', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Bike Time vs Swim Time",
+          x = "Swim Time (minutes)",
+          y = "Bike Time (minutes)")
+```
+
+```{r}
+bike_vs_overall_lm <- lm(Overall.Time ~ Bike.Time, data = iron_modified)
+bike_vs_overall_lm
+iron_modified %>%
+  gf_point(Overall.Time ~ Bike.Time, color = 'maroon') %>%
+  gf_lm(color = "black")%>%
+  gf_labs(title = "Overall Time vs Bike Time",
+          x = "Bike Time (minutes)",
+          y = "Overall Time (minutes)")
+```
+
+```{r}
+summary(bike_vs_overall_lm)
+```
+
+```{r}
+swim_vs_overall_lm <- lm(Overall.Time ~ Swim.Time, data = iron_modified)
+swim_vs_overall_lm
+iron_modified %>%
+  gf_point(Overall.Time ~ Swim.Time, color = 'hotpink') %>%
+  gf_lm(color = "black")%>%
+  gf_labs(title = "Overall Time vs Swim Time",
+          x = "Swim Time (minutes)",
+          y = "Overall Time (minutes)")
+```
+
+```{r}
+summary(swim_vs_overall_lm)
+```
+
+```{r}
+run_vs_overall_lm <- lm(Overall.Time ~ Run.Time, data = iron_modified)
+run_vs_overall_lm
+iron_modified %>%
+  gf_point(Overall.Time ~ Run.Time, color = 'turquoise') %>%
+  gf_lm(color = "black")%>%
+  gf_labs(title = "Overall Time vs Run Time",
+          x = "Run Time (minutes)",
+          y = "Overall Time (minutes)")
+```
+
+```{r}
+summary(run_vs_overall_lm)
+```
+
+predicting part
+
+## Inferences
