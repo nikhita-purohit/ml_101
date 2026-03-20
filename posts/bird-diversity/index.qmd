@@ -1,0 +1,193 @@
+---
+title: "Bird Diversity"
+author: "Nikhita Purohit"
+format: html
+editor: visual
+date: "2026-03-17"
+categories: [Clustering]
+---
+
+![](images/clipboard-3211494284.png)
+
+Bird genetic diversity study of 387 bird species
+
+# 
+
+# 
+
+**Objective:** Ecologists and evolutionary biologists have long investigated links between diversity and geography. For example, as the area of a habitat increases, the number of different species found within it increases—a seemingly obvious finding, but the exact shape of the relationship has been found to relate to the rates of immigration and extinction in the habitat, predator-prey behaviors, and so on.
+
+A similar relationship would seem likely to exist within a species. A species that lives over a small area might have low genetic diversity, because individuals frequently interbreed and there is little opportunity for some individuals to evolve separately from others. A species that lives over a wide area might have high genetic diversity, both because the varied habitat in which it lives means different individuals experience different natural selection pressures, and because individuals far apart may never be able to interbreed.
+
+The exact nature of this relationship could be used to test hypotheses about evolution and natural selection. This dataset comes from a paper that explored the relationship in birds, which have widely varying geographic ranges and hence could be a good group to work with. \# \#
+
+1.  **Setting up R Packages**
+
+```{r}
+#| message: false
+#| warning: false
+
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggformula)
+library(janitor)
+library(naniar)
+library(visdat)
+```
+
+2.  **Reading Data**
+
+```{r}
+bird <- readr::read_csv("../../data/bird-diversity.csv", show_col_types = FALSE)
+```
+
+3.  **Examining and Cleaning Data**
+
+```{r}
+dim(bird)
+str(bird)
+```
+
+```{r}
+head(bird)
+tail(bird)
+```
+
+```{r}
+names(bird)
+```
+
+```{r}
+visdat::vis_dat(bird, sort_type = TRUE)
+```
+
+```{r}
+bird_modified <- bird %>% tidyr::drop_na()
+visdat::vis_dat(bird_modified, sort_type = TRUE)
+```
+
+```{r}
+bird_modified <- bird %>%
+  dplyr::mutate(across(where(is.character), as.factor)) %>% 
+  relocate(where(is.factor))
+glimpse(bird_modified)
+```
+
+```{r}
+bird_modified %>%
+  DT::datatable(
+    style = "default",
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: left; color: black; font-size: 100%;", "Bird Diversity Dataset (Clean)"
+    ),
+    options = list(pageLength = 10, autoWidth = TRUE)
+  ) %>%
+  DT::formatStyle(
+    columns = names(bird_modified),
+    fontFamily = "Arial",
+    fontSize = "12px",
+  )
+```
+
+# 
+
+# 
+
+4.  **Data Dictionary**
+
+**Quantitative Data**
+
+1.  Heterozygosity (dbl): A measure of genetic richness; the probability that for a randomly selected gene, the two copies are different alleles.
+2.  Allelic richness (dbl): The average number of different alleles (versions of a gene) for each gene.
+3.  Breeding range size (dbl): Size of the spatial range over which the bird breeds ($10,000 \text{ km}^2$ units).
+4.  Body mass (dbl): Average body mass of the species in grams.
+5.  Latitude (dbl): Mid-point latitude of the species breeding range (all values positive).
+
+**Qualitative Data**
+
+1.  Species (fct): The bird species name.
+2.  Family (fct): Family of birds to which this species belongs.
+3.  Migratory status (fct): Is this species migratory or does it stay resident in one area?
+4.  References (chr): References for the data for this species.
+
+```{r}
+summary(bird)
+```
+
+5.  **Graphs**
+
+```{r}
+bird %>%
+  gf_histogram(~ Heterozygosity,
+               fill = "cyan4",
+               bins = 20) %>%
+  gf_labs(title = "Heterozygosity",
+          x = "Heterozygosity",
+          y = "Number of Bird Species")
+
+bird %>%
+  gf_histogram(~ `Allelic richness`,
+               fill = "blue",
+               bins = 20) %>%
+  gf_labs(title = "Allelic Richness",
+          x = "Allelic Richness",
+          y = "Number of Bird Species")
+
+bird %>%
+  gf_histogram(~ `Breeding range size`,
+               fill = "palevioletred",
+               bins = 20) %>%
+  gf_labs(title = "Breeding Range Size",
+          x = "Breeding Range Size",
+          y = "Number of Bird Species")
+
+bird %>%
+  gf_histogram(~ `Body mass`,
+               fill = "lightgreen",
+               bins = 20) %>%
+  gf_labs(title = "Body Mass",
+          x = "Body Mass",
+          y = "Number of Bird Species")
+
+bird %>%
+  gf_histogram(~ Latitude,
+               fill = "brown",
+               bins = 20) %>%
+  gf_labs(title = "Latitude",
+          x = "Latitude",
+          y = "Number of Bird Species")
+
+
+```
+
+```{r}
+bird_modified %>%
+gf_point(`Allelic richness` ~ Latitude, data = bird_modified, color = 'lightgreen', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Allelic Richness vs Latitude",
+          x = "Latitude",
+          y = "Allelic Richness")
+
+bird_modified %>%
+gf_point(`Heterozygosity` ~ Latitude, data = bird_modified, color = 'pink', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Heterozygosity vs Latitude",
+          x = "Latitude",
+          y = "Heterozygosity")
+
+bird_modified %>%
+gf_point(`Breeding range size` ~ Latitude, data = bird_modified, color = 'violet', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Breeding Range Size vs Latitude",
+          x = "Latitude",
+          y = "Breeding Range Size")
+
+bird_modified %>%
+gf_point(`Breeding range size` ~ `Body mass`, data = bird_modified, color = 'blue', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Breeding Range Size vs Body Mass",
+          x = "Body Mass",
+          y = "Breeding Range Size")
+
+```

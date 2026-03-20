@@ -1,0 +1,210 @@
+---
+title: "Fish Market"
+author: "Nikhita Purohit"
+format: html
+editor: visual
+date: "2026-03-17"
+categories: [Multiple Linear Regression]
+---
+
+![](images/clipboard-131266574.png)
+
+Estimate the weight of a fish based on its species and the physical measurements
+
+# 
+
+# 
+
+**Objective:** The fish market dataset is a collection of data related to various species of fish and their characteristics. This dataset is designed for polynomial regression analysis and contains several columns with specific information. \# \#
+
+1.  **Setting up R Packages**
+
+```{r}
+#| message: false
+#| warning: false
+
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggformula)
+library(janitor)
+library(naniar)
+library(visdat)
+```
+
+2.  **Reading Data**
+
+```{r}
+fish <- readr::read_csv("../../data/Fish.csv", show_col_types = FALSE)
+```
+
+3.  **Examining and Cleaning Data**
+
+```{r}
+dim(fish)
+str(fish)
+```
+
+```{r}
+head(fish)
+tail(fish)
+```
+
+```{r}
+names(fish)
+```
+
+```{r}
+visdat::vis_dat(fish, sort_type = TRUE)
+```
+
+```{r}
+fish_modified <- fish %>% tidyr::drop_na()
+visdat::vis_dat(fish_modified, sort_type = TRUE)
+```
+
+```{r}
+fish_modified <- fish %>%
+  dplyr::mutate(across(where(is.character), as.factor)) %>% 
+  relocate(where(is.factor))
+glimpse(fish_modified)
+```
+
+```{r}
+fish_modified %>%
+  DT::datatable(
+    style = "default",
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: left; color: black; font-size: 100%;", "Fish Market Dataset (Clean)"
+    ),
+    options = list(pageLength = 10, autoWidth = TRUE)
+  ) %>%
+  DT::formatStyle(
+    columns = names(fish_modified),
+    fontFamily = "Arial",
+    fontSize = "12px",
+  )
+```
+
+# 
+
+# 
+
+4.  **Data Dictionary**
+
+**Quantitative Data**
+
+1.  Weight (dbl): The weight of the fish (in grams).
+2.  Length1 (dbl): The first measurement of the fish's length (in cm).
+3.  Length2 (dbl): The second measurement of the fish's length (in cm).
+4.  Length3 (dbl): The third measurement of the fish's length (in cm).
+5.  Height (dbl): The height of the fish (in cm).
+6.  Width (dbl): The width of the fish (in cm).
+
+**Qualitative Data**
+
+1.  Species (fct): The species name of the fish (e.g., Perch, Bream, Roach, Pike, Smelt, Parkki, or Whitefish).
+
+```{r}
+summary(fish)
+```
+
+5.  **Graphs**
+
+```{r}
+fish_modified %>%
+  gf_histogram(~ Weight,
+               fill = "cyan4",
+               bins = 20) %>%
+  gf_labs(title = "Weight",
+          x = "Weight (grams)",
+          y = "Number of Fish")
+
+fish_avg_length <- fish_modified %>%
+  mutate(Average_Length = rowMeans(select(., Length1, Length2, Length3)))
+fish_avg_length %>%
+  gf_histogram(~ Average_Length,
+               fill = "steelblue",
+               bins = 20) %>%
+  gf_labs(title = "Average Fish Length",
+          x = "Average Length (cm)",
+          y = "Number of Fish")
+
+fish_modified %>%
+  gf_histogram(~ Height,
+               fill = "pink",
+               bins = 20) %>%
+  gf_labs(title = "Height",
+          x = "Height (cm)",
+          y = "Number of Fish")
+
+fish_modified %>%
+  gf_histogram(~ Width,
+               fill = "palevioletred",
+               bins = 20) %>%
+  gf_labs(title = "Width",
+          x = "Width (cm)",
+          y = "Number of Fish")
+
+```
+
+```{r}
+fish_avg_length %>%
+gf_point(Average_Length ~ Weight, data = fish_avg_length, color = 'lightgreen', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Average Length vs Weight",
+          x = "Weight (grams)",
+          y = "Average Length (cm)")
+
+fish_avg_length %>%
+gf_point(Width ~ Weight, data = fish_avg_length, color = 'navy', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Width vs Weight",
+          x = "Width (cm)",
+          y = "Average Length (cm)")
+
+fish_avg_length %>%
+gf_point(Height ~ Weight, data = fish_avg_length, color = 'darkgreen', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Height vs Weight",
+          x = "Width (cm)",
+          y = "Height (cm)")
+```
+
+```{r}
+fish_lm <- lm(Weight ~ Average_Length +
+                Height +
+                Width,
+                data = fish_avg_length)
+summary(fish_lm)
+
+```
+
+```{r}
+# This is where I realised this was multiple linear regression
+
+# fish_avg_length %>%
+#   gf_point(Weight ~ Average_Length +
+#                 Height +
+#                 Width, color = 'hotpink') %>%
+#   gf_lm(color = "black")%>%
+#   gf_labs(title = "Weight vs (Average Length, Height, Width)",
+#           x = "Model",
+#           y = "Weight (grams)")
+```
+
+6.  **Predicting Model**
+
+```{r}
+test = data.frame(Average_Length = 30,
+                  Height = 15,
+                  Width = 5.5)
+
+predict(fish_lm, newdata = test)
+```
+
+7.  **Summary of Inferences**
+
+This dataset contains three recordings of the length of each fish. I used the average of these lengths for the graphs. I checked the correlation of [average length vs weight], [width vs weight], and [height vs weight] and I found that there was no linear relation between any of them. However, I created a linear regression model of [weight vs (average length, height and width)] and the summary shows that it is very significant. The adjusted R^2 value is closer to 1, thus proves that this linear regression model is successful. However, I was not able to plot the graph. On learning what the error was, I came to know that this was a multiple linear regression model and the syntax for the graph was incorrect. 
+
+

@@ -1,2 +1,16 @@
 project:
   type: website
+
+website:
+  title: "Machine Learning 101"
+  navbar:
+    right:
+      - icon: github
+        href: https://github.com/
+      - icon: twitter
+        href: https://twitter.com
+format:
+  html:
+    theme: journal
+
+editor: visual

@@ -1,0 +1,257 @@
+---
+title: "Spotify"
+author: "Nikhita Purohit"
+format: html
+editor: visual
+date: "2026-03-18"
+categories: [Linear Regression]
+---
+
+![](images/clipboard-286704031.png)
+
+The data set looks at Spotify Song features
+
+# 
+
+# 
+
+**Objective:** To analyze and explore Spotify audio features to understand the characteristics and patterns present in different songs. \# \#
+
+1.  **Setting up R Packages**
+
+```{r}
+#| message: false
+#| warning: false
+
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggformula)
+library(janitor)
+library(naniar)
+library(visdat)
+```
+
+2.  **Reading Data**
+
+```{r}
+song <- readr::read_csv("../../data/SpotifySongPolularityAPIExtract.csv", show_col_types = FALSE)
+```
+
+3.  **Examining and Cleaning Data**
+
+```{r}
+dim(song)
+str(song)
+```
+
+```{r}
+head(song)
+tail(song)
+```
+
+```{r}
+names(song)
+```
+
+```{r}
+song_modified <- song %>% tidyr::drop_na()
+```
+
+```{r}
+song_modified <- song %>%
+  dplyr::mutate(across(where(is.character), as.factor)) %>% 
+  relocate(where(is.factor))
+glimpse(song_modified)
+```
+
+```{r}
+song_modified %>%
+  DT::datatable(
+    style = "default",
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: left; color: black; font-size: 100%;", "Spotify Dataset (Clean)"
+    ),
+    options = list(pageLength = 10, autoWidth = TRUE)
+  ) %>%
+  DT::formatStyle(
+    columns = names(song_modified),
+    fontFamily = "Arial",
+    fontSize = "12px",
+  )
+```
+
+# 
+
+# 
+
+4.  **Data Dictionary**
+
+**Quantitative Data**
+
+1.  Acousticness (dbl): A measure (0–1) of how likely the track is acoustic.
+2.  Danceability (dbl): A measure (0–1) of how suitable the track is for dancing.
+3.  Duration (int): The length of the song in milliseconds.
+4.  Energy (dbl): The intensity and activity level of the song (0–1).
+5.  Instrumentalness (dbl): The likelihood (0–1) that the track contains no vocals.
+6.  Key (int): The musical key of the track, represented numerically (0–11).
+7.  Liveness (dbl): The probability (0–1) that the track was performed live.
+8.  Loudness (dbl): The overall loudness of the track in decibels (dB).
+9.  Mode (int): Indicates whether the song is in a major (1) or minor (0) key.
+10. Speechiness (dbl): The presence of spoken words in a track (0–1).
+11. Tempo (dbl): The speed of the track in beats per minute (BPM).
+12. Time Signature (int): The number of beats per bar in the track.
+13. Valence (dbl): The musical positivity of the track (0–1), where higher values sound happier.
+14. Popularity (int): A score from 0–100 indicating how popular the song is on Spotify.
+
+**Qualitative Data**
+
+1.  Artist Name (string): The name of the artist(s) who performed the track.
+2.  Track Name (string): The title of the song.
+3.  Track ID (string): A unique identifier assigned to each song by Spotify.
+
+```{r}
+summary(song)
+```
+
+5.  **Graphs**
+
+```{r}
+song_modified %>%
+  gf_histogram(~ acousticness,
+               fill = "cyan4",
+               bins = 20) %>%
+  gf_labs(title = "Accousticness",
+          x = "Acousticness",
+          y = "Number of Songs")
+
+song_modified %>%
+  gf_histogram(~ danceability,
+               fill = "blue",
+               bins = 20) %>%
+  gf_labs(title = "Danceability",
+          x = "Danceability",
+          y = "Number of Songs")
+
+# converting the duration from milliseconds to minutes because it is easier to understand
+
+song_modified_minutes <- song_modified %>%
+mutate(duration_min = round(duration_ms / 60000, 2))
+
+song_modified_minutes %>%
+  gf_histogram(~ duration_min,
+               fill = "orange",
+               bins = 20) %>%
+  gf_labs(title = "Duration",
+          x = "Duration (min)",
+          y = "Number of Songs")
+
+song_modified %>%
+  gf_histogram(~ loudness,
+               fill = "hotpink",
+               bins = 20) %>%
+  gf_labs(title = "Loudness",
+          x = "Loudness",
+          y = "Number of Songs")
+
+song_modified %>%
+  gf_histogram(~ tempo,
+               fill = "violet",
+               bins = 20) %>%
+  gf_labs(title = "Tempo",
+          x = "Tempo",
+          y = "Number of Songs")
+
+song_modified %>%
+  gf_histogram(~ popularity,
+               fill = "tan",
+               bins = 20) %>%
+  gf_labs(title = "Popularity",
+          x = "Popularity",
+          y = "Number of Songs")
+```
+
+
+```{r}
+song_modified_minutes %>%
+gf_point(popularity ~ tempo, data = song_modified_minutes, color = 'pink', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Popularity vs Tempo",
+          x = "Popularity",
+          y = "Tempo")
+```
+
+```{r}
+song_modified_minutes %>%
+gf_point(popularity ~ duration_min, data = song_modified_minutes, color = 'lightgreen', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Popularity vs Duration",
+          x = "Popularity",
+          y = "Duration (minutes)")
+```
+
+```{r}
+song_modified_minutes %>%
+gf_point(popularity ~ loudness, data = song_modified_minutes, color = 'darkturquoise', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Popularity vs Loudness",
+          x = "Popularity",
+          y = "Loudness")
+```
+
+```{r}
+song_modified_minutes %>%
+gf_point(popularity ~ liveness, data = song_modified_minutes, color = 'slategrey', size = 2) %>%
+  gf_smooth(color = 'black') %>% 
+  gf_labs(title = "Popularity vs Liveness",
+          x = "Popularity",
+          y = "Liveness")
+```
+
+```{r}
+popularity_vs_loudness_lm <- lm(popularity ~ loudness, data = song_modified_minutes)
+popularity_vs_loudness_lm
+song_modified_minutes %>%
+  gf_point(popularity ~ loudness, color = 'maroon') %>%
+  gf_lm(color = "black")%>%
+  gf_labs(title = "Popularity vs Loudness",
+          x = "Loudness",
+          y = "Popularity")
+```
+
+```{r}
+summary(popularity_vs_loudness_lm)
+```
+
+```{r}
+popularity_vs_lid_lm <- lm(popularity ~ loudness + instrumentalness + danceability, 
+                       data = song_modified_minutes)
+popularity_vs_lid_lm
+```
+
+```{r}
+summary(popularity_vs_lid_lm)
+```
+
+
+6.  **Predicting Model**
+
+
+```{r}
+test1 = data.frame(loudness = -10.08)
+
+predict(popularity_vs_loudness_lm, newdata = test1)
+```
+```{r}
+test2 = data.frame(loudness = -9.008,
+                   instrumentalness = 8.47e-01,
+                   danceability = 0.740)
+
+predict(popularity_vs_lid_lm, newdata = test2)
+```
+
+
+7.  **Summary of Inferences**
+
+I found this dataset interesting because I never knew how many factors affect the success of a song. I converted duration from milliseconds to minutes. Made me question why they even recorded it in milliseconds because it is so hard to compare it that way. Tempo and popularity showed a very slight linear relation, so I discarded it. Popularity vs duration showed a slight inverse relation, showing that longer songs aren't as popular. Popularity vs loudness showed a significant linear relation so I built the first model using this. I also tried creating a model of [popularity vs (loudness, instrumentalness and danceability)]. The adjusted R^2 values of both models are pretty low but the second model proves to be more accurate than the first.
+

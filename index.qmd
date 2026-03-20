@@ -1,0 +1,9 @@
+---
+listing:
+  contents: posts # This tells Quarto to look in your posts folder
+  sort: "date desc"
+  type: default # This creates the "icon/card" look from your first image
+  categories: true
+page-layout: full
+title-block-banner: true
+---

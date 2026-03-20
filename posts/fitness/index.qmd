@@ -1,0 +1,208 @@
+---
+title: "Steps Count for Fitness Journey"
+author: "Nikhita Purohit"
+format: html
+editor: visual
+date: "2026-03-17"
+categories: [Linear Regression]
+---
+
+![](images/clipboard-3654824570.png)
+
+\[ Discarded because of too many errors\]
+
+# 
+
+# 
+
+**Objective:** The motivation for gathering this dataset was personal, with the goal of answering a simple question: "Impact of Daily Step Count on Weight Loss Journey?" \# \#
+
+1.  **Setting up R Packages**
+
+```{r}
+#| message: false
+#| warning: false
+
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggformula)
+library(janitor)
+library(naniar)
+library(visdat)
+```
+
+2.  **Reading Data**
+
+```{r}
+step <- readr::read_csv("../../data/Steps Export_ 3-17-21to9-23-22.csv", show_col_types = FALSE)
+```
+
+3.  **Examining and Cleaning Data**
+
+```{r}
+dim(step)
+str(step)
+```
+
+```{r}
+head(step)
+tail(step)
+```
+
+```{r}
+names(step)
+```
+
+```{r}
+visdat::vis_dat(step, sort_type = TRUE)
+```
+
+```{r}
+step_modified <- step %>% tidyr::drop_na()
+visdat::vis_dat(step_modified, sort_type = TRUE)
+```
+
+```{r}
+step_modified <- step %>%
+  dplyr::mutate(across(where(is.character), as.factor)) %>% 
+  relocate(where(is.factor))
+glimpse(step_modified)
+```
+
+```{r}
+step_modified %>%
+  DT::datatable(
+    style = "default",
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: left; color: black; font-size: 100%;", "Steps Count for Fitness Journey Dataset (Clean)"
+    ),
+    options = list(pageLength = 10, autoWidth = TRUE)
+  ) %>%
+  DT::formatStyle(
+    columns = names(step_modified),
+    fontFamily = "Arial",
+    fontSize = "12px",
+  )
+```
+
+# 
+
+# 
+
+4.  **Data Dictionary**
+
+**Quantitative Data**
+
+1.  Step Count (int): The total number of steps taken during the day.
+2.  Distance Travelled (dbl): The total distance covered (in km).
+3.  Active Time (dbl): The total amount of time spent in physical activity (in minutes).
+4.  Flights Climbed (int): The number of floors or flights of stairs ascended.
+5.  Goal (int): The daily target number of steps set by the user.
+6.  Percentage of Goal Completed (dbl): The progress toward the daily step goal, expressed as a percentage.
+7.  Calories (dbl): The total amount of energy expended (in kcal).
+
+**Qualitative Data**
+
+1.  Date (date): The specific calendar day the data was recorded.
+
+```{r}
+summary(step)
+```
+
+```{r}
+
+# Fixing the data set because three columns have units in their records
+
+step_modified <- step_modified %>%
+  mutate(
+    `Active Time` = case_when(
+      grepl("hr", `Active Time`) ~ {
+        time <- gsub(" hr", "", `Active Time`)
+        parts <- strsplit(time, ":")
+        sapply(parts, function(x) {
+          if(length(x) == 2) {
+            as.numeric(x[1]) * 60 + as.numeric(x[2])
+          } else {
+            NA_real_
+          }
+        })
+      },
+      grepl("min", `Active Time`) ~ {
+        time <- gsub(" min", "", `Active Time`)
+        parts <- strsplit(time, ":")
+        sapply(parts, function(x) {
+          if(length(x) == 2) {
+            as.numeric(x[1]) + as.numeric(x[2]) / 60
+          } else {
+            NA_real_
+          }
+        })
+      }
+    )
+  )
+
+step_modified <- step_modified %>%
+  mutate(`Distance Travelled` =
+           as.numeric(as.character(`Distance Travelled`)))
+```
+
+5.  **Graphs**
+
+```{r}
+step_modified %>%
+  gf_histogram(~ `Step Count`,
+               fill = "cyan4",
+               bins = 20) %>%
+  gf_labs(title = "Step Count",
+          x = "Count",
+          y = "Number of People")
+
+step_modified %>%
+  gf_histogram(~ `Distance Travelled`,
+               fill = "orange",
+               data = step_modified) %>%
+  gf_labs(title = "Distance Travelled",
+          x = "Distance (km)",
+          y = "Number of People")
+
+step_modified %>%
+  gf_histogram(~ `Active Time`,
+               fill = "blue",
+               bins = 20) %>%
+  gf_labs(title = "Active Time",
+          x = "Time (min)",
+          y = "Number of People")
+
+step_modified %>%
+  gf_histogram(~ `Flights Climbed`,
+               fill = "pink",
+               bins = 20) %>%
+  gf_labs(title = "Flights Climbed",
+          x = "Count",
+          y = "Number of People")
+
+step_modified %>%
+  gf_histogram(~ `Goal`,
+               fill = "lightgreen",
+               bins = 20) %>%
+  gf_labs(title = "Goal",
+          x = "Number of Steps",
+          y = "Number of People")
+
+# step_modified %>%
+#   gf_histogram(~ `Percentage of Goal Completed`,
+#                fill = "maroon",
+#                bins = 20) %>%
+#   gf_labs(title = "Percentage of Goal Completed",
+#           x = "Number (in %)",
+#           y = "Number of People")
+
+step_modified %>%
+  gf_histogram(~ Calories,
+               fill = "purple",
+               bins = 20) %>%
+  gf_labs(title = "Calories",
+          x = "Calories (in kcal)",
+          y = "Number of People")
+```
