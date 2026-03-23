@@ -260,6 +260,157 @@ test = data.frame(Run.Time = 250)
 predict(run_vs_overall_lm, newdata = test)
 ```
 
+
 7.  **Summary of Inferences**
 
 The Ironman triathlon is held in this particular order- swimming, biking, and finally running. The order as well as the distance of these sports highly affects the data. In this dataset, the graphs for run completion times and bike completion times are normal data distributions. However, the graph for swim completion times is very odd. Almost every participant has completed the swim around the same time. On checking the correlation of different attributes, I found that the relation between \[run time and overall time\] and \[bike time and overall time\] were linear, so I used them to make two prediction models. Swim time was not so helpful.
+
+
+8. **Prediction using train and test data **
+
+```{r}
+rows <- nrow(iron_modified)
+rows
+0.75 * rows
+```
+```{r}
+train_rows <- sample(1:nrow(iron_modified), 367)
+```
+
+```{r}
+train_data = iron_modified[train_rows, ]
+```
+
+```{r}
+test_data = iron_modified[-train_rows, ]
+```
+
+```{r}
+table(test_data$Country)
+```
+```{r}
+table(iron_modified$Country)
+```
+```{r}
+table(iron_modified$Finish.Status)
+# Yayy
+```
+
+
+```{r}
+prop.table(table(iron_modified$Country))
+```
+
+1. swim time -> overall time
+
+```{r}
+swim_lm <- lm(Overall.Time ~ Swim.Time,
+                  data = train_data)
+summary(swim_lm)
+```
+```{r}
+predicted_values1 <- predict(swim_lm, newdata = test_data)
+```
+
+
+2. bike time -> overall time
+
+```{r}
+bike_lm <- lm(Overall.Time ~ Bike.Time,
+              data = train_data)
+summary(bike_lm)
+```
+```{r}
+predicted_values2 = predict(bike_lm, newdata = test_data)
+```
+
+
+3. run time -> overall time
+
+```{r}
+run_lm <- lm(Overall.Time ~ Run.Time,
+             data = train_data)
+summary(run_lm)
+```
+```{r}
+predicted_values3 <- predict(run_lm, newdata = test_data)
+```
+
+
+
+4. swim + bike -> overall
+
+```{r}
+sb_lm <- lm(Overall.Time ~ Swim.Time + Bike.Time,
+            data = train_data)
+summary(sb_lm)
+```
+```{r}
+predicted_values4 <- predict(sb_lm, newdata = test_data)
+```
+
+
+
+5. bike + run -> overall
+
+```{r}
+br_lm <- lm(Overall.Time ~ Bike.Time + Run.Time,
+            data = train_data)
+summary(br_lm)
+```
+```{r}
+predicted_values5 <- predict(br_lm, newdata = test_data)
+```
+
+
+
+6. swim + run -> overall
+
+```{r}
+sr_lm <- lm(Overall.Time ~ Swim.Time + Run.Time,
+            data = train_data)
+summary(sr_lm)
+```
+```{r}
+predicted_values6 <- predict(sr_lm, newdata = test_data)
+```
+
+
+
+7. swim + bike + run -> overall
+
+```{r}
+sbr_lm <- lm(Overall.Time ~ Swim.Time + Bike.Time + Run.Time,
+             data = train_data)
+summary(sbr_lm)
+```
+```{r}
+predicted_values7 <- predict(sbr_lm, newdata = test_data)
+```
+
+
+Finding RMSE for each linear model
+
+```{r}
+sqrt(mean((predicted_values1-test_data$Overall.Time)^2))
+sqrt(mean((predicted_values2-test_data$Overall.Time)^2))
+sqrt(mean((predicted_values3-test_data$Overall.Time)^2))
+sqrt(mean((predicted_values4-test_data$Overall.Time)^2))
+sqrt(mean((predicted_values5-test_data$Overall.Time)^2))
+sqrt(mean((predicted_values6-test_data$Overall.Time)^2))
+sqrt(mean((predicted_values7-test_data$Overall.Time)^2))
+```
+
+
+Therefore, we can conclude that the fifth model [ bike + run -> overall ]
+is the most successful linear model because it has the lowest RMSE -> 10.2388
+
+
+
+
+
+
+
+
+
+

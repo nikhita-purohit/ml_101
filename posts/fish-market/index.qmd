@@ -204,9 +204,11 @@ predict(fish_lm, newdata = test)
 ```
 
 
+
 7.  **Summary of Inferences**
 
 This dataset contains three recordings of the length of each fish. I used the average of these lengths for the graphs. I checked the correlation of \[average length vs weight\], \[width vs weight\], and \[height vs weight\] and I found that there was no linear relation between any of them. However, I created a linear regression model of \[weight vs (average length, height and width)\] and the summary shows that it is very significant. The adjusted R\^2 value is closer to 1, thus proves that this linear regression model is successful. However, I was not able to plot the graph. On learning what the error was, I came to know that this was a multiple linear regression model and the syntax for the graph was incorrect.
+
 
 
 8. **Prediction using train and test data ** 
@@ -219,17 +221,14 @@ rows
 
 ```{r}
 train_rows <- sample(1:nrow(fish_avg_length), 120)
-train_rows
 ```
 
 ```{r}
 train_data = fish_avg_length[train_rows, ]
-train_data
 ```
 
 ```{r}
 test_data = fish_avg_length[-train_rows, ]
-test_data
 ```
 
 ```{r}
@@ -237,8 +236,11 @@ table(test_data$Species)
 ```
 ```{r}
 table(fish_avg_length$Species)
+```
+```{r}
 prop.table(table(fish_avg_length$Species))
 ```
+
 
 1. average length, height, width -> weight
 
@@ -333,4 +335,4 @@ sqrt(mean((predicted_values4-test_data$Weight)^2))
 ```
 
 Therefore, we can conclude that the second model [ average length -> weight ]
-is the most successful linear model because it has the lowest RMSE.
+is the most successful linear model because it has the lowest RMSE -> 139.3819
