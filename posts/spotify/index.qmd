@@ -171,7 +171,6 @@ song_modified %>%
           y = "Number of Songs")
 ```
 
-
 ```{r}
 song_modified_minutes %>%
 gf_point(popularity ~ tempo, data = song_modified_minutes, color = 'pink', size = 2) %>%
@@ -233,15 +232,14 @@ popularity_vs_lid_lm
 summary(popularity_vs_lid_lm)
 ```
 
-
 6.  **Predicting Model**
-
 
 ```{r}
 test1 = data.frame(loudness = -10.08)
 
 predict(popularity_vs_loudness_lm, newdata = test1)
 ```
+
 ```{r}
 test2 = data.frame(loudness = -9.008,
                    instrumentalness = 8.47e-01,
@@ -250,8 +248,6 @@ test2 = data.frame(loudness = -9.008,
 predict(popularity_vs_lid_lm, newdata = test2)
 ```
 
-
 7.  **Summary of Inferences**
 
-I found this dataset interesting because I never knew how many factors affect the success of a song. I converted duration from milliseconds to minutes. Made me question why they even recorded it in milliseconds because it is so hard to compare it that way. Tempo and popularity showed a very slight linear relation, so I discarded it. Popularity vs duration showed a slight inverse relation, showing that longer songs aren't as popular. Popularity vs loudness showed a significant linear relation so I built the first model using this. I also tried creating a model of [popularity vs (loudness, instrumentalness and danceability)]. The adjusted R^2 values of both models are pretty low but the second model proves to be more accurate than the first.
-
+I found this dataset interesting because I never knew how many factors affect the success of a song. I converted duration from milliseconds to minutes. Made me question why they even recorded it in milliseconds because it is so hard to compare it that way. Tempo and popularity showed a very slight linear relation, so I discarded it. Popularity vs duration showed a slight inverse relation, showing that longer songs aren't as popular. Popularity vs loudness showed a significant linear relation so I built the first model using this. I also tried creating a model of \[popularity vs (loudness, instrumentalness and danceability)\]. The adjusted R\^2 values of both models are pretty low but the second model proves to be more accurate than the first.

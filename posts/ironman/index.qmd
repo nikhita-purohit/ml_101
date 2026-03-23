@@ -253,13 +253,13 @@ test = data.frame(Bike.Time = 300)
 
 predict(bike_vs_overall_lm, newdata = test)
 ```
+
 ```{r}
 test = data.frame(Run.Time = 250)
 
 predict(run_vs_overall_lm, newdata = test)
 ```
 
-
 7.  **Summary of Inferences**
 
-The Ironman triathlon is held in this particular order- swimming, biking, and finally running. The order as well as the distance of these sports highly affects the data. In this dataset, the graphs for run completion times and bike completion times are normal data distributions. However, the graph for swim completion times is very odd. Almost every participant has completed the swim around the same time. On checking the correlation of different attributes, I found that the relation between [run time and overall time] and [bike time and overall time] were linear, so I used them to make two prediction models. Swim time was not so helpful.
+The Ironman triathlon is held in this particular order- swimming, biking, and finally running. The order as well as the distance of these sports highly affects the data. In this dataset, the graphs for run completion times and bike completion times are normal data distributions. However, the graph for swim completion times is very odd. Almost every participant has completed the swim around the same time. On checking the correlation of different attributes, I found that the relation between \[run time and overall time\] and \[bike time and overall time\] were linear, so I used them to make two prediction models. Swim time was not so helpful.
