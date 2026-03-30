@@ -2,6 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/ml-concepts/index.html",
+      "/posts/orange-guava/index.html",
       "/posts/spotify/index.html",
       "/posts/bird-diversity/index.html",
       "/posts/fish-market/index.html",

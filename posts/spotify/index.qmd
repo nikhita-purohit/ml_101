@@ -15,7 +15,7 @@ The data set looks at Spotify Song features
 
 # 
 
-**Objective:** To analyze and explore Spotify audio features to understand the characteristics and patterns present in different songs. \# \#
+**Objective:** To analyze and explore Spotify audio features to understand the characteristics and patterns present in different songs.
 
 1.  **Setting up R Packages**
 
@@ -248,13 +248,11 @@ test2 = data.frame(loudness = -9.008,
 predict(popularity_vs_lid_lm, newdata = test2)
 ```
 
-
 7.  **Summary of Inferences**
 
 I found this dataset interesting because I never knew how many factors affect the success of a song. I converted duration from milliseconds to minutes. Made me question why they even recorded it in milliseconds because it is so hard to compare it that way. Tempo and popularity showed a very slight linear relation, so I discarded it. Popularity vs duration showed a slight inverse relation, showing that longer songs aren't as popular. Popularity vs loudness showed a significant linear relation so I built the first model using this. I also tried creating a model of \[popularity vs (loudness, instrumentalness and danceability)\]. The adjusted R\^2 values of both models are pretty low but the second model proves to be more accurate than the first.
 
-
-8. **Prediction using train and test data **
+8.  **Prediction using train and test data**
 
 ```{r}
 rows <- nrow(song_modified_minutes)
@@ -274,8 +272,7 @@ train_data = song_modified_minutes[train_rows, ]
 test_data = song_modified_minutes[-train_rows, ]
 ```
 
-
-1. everything -> popularity
+1.  everything -\> popularity
 
 ```{r}
 spotify_lm1 <- lm(popularity ~  acousticness + danceability + duration_min +                                        energy + instrumentalness + key + valence +
@@ -285,12 +282,12 @@ spotify_lm1 <- lm(popularity ~  acousticness + danceability + duration_min +    
 
 summary(spotify_lm1)
 ```
+
 ```{r}
 predicted_values1 <- predict(spotify_lm1, newdata = test_data)
 ```
 
-
-2. only significant -> popularity
+2.  only significant -\> popularity
 
 ```{r}
 spotify_lm2 <- lm(popularity ~  acousticness + danceability +                                                       energy + instrumentalness + valence +
@@ -300,76 +297,70 @@ spotify_lm2 <- lm(popularity ~  acousticness + danceability +                   
 
 summary(spotify_lm2)
 ```
+
 ```{r}
 predicted_values2 <- predict(spotify_lm2, newdata = test_data)
 ```
 
-
-
-3. energy and vibes model
+3.  energy and vibes model
 
 ```{r}
 spotify_lm3 <- lm(popularity ~ danceability + valence + energy,
                   data = train_data)
 summary(spotify_lm3)
 ```
+
 ```{r}
 predicted_values3 <- predict(spotify_lm3, newdata = test_data)
 ```
 
-
-
-4. technical model
+4.  technical model
 
 ```{r}
 spotify_lm4 = lm(popularity ~ danceability + valence + energy,
                  data = train_data)
 summary(spotify_lm4)
 ```
+
 ```{r}
 predicted_values4 <- predict(spotify_lm4, newdata = test_data)
 ```
 
-
-
-5. beats and rhythms model
+5.  beats and rhythms model
 
 ```{r}
 spotify_lm5 = lm(popularity ~ danceability + time_signature + tempo,
                  data = train_data)
 summary(spotify_lm5)
 ```
+
 ```{r}
 predicted_values5 <- predict(spotify_lm5, newdata = test_data)
 ```
 
-
-
-6. energy and loudness model
+6.  energy and loudness model
 
 ```{r}
 spotify_lm6 = lm(popularity ~ danceability + energy + loudness + instrumentalness,
                  data = train_data)
 summary(spotify_lm6)
 ```
+
 ```{r}
 predicted_values6 <- predict(spotify_lm6, newdata = test_data)
 ```
 
-
-
-7. vibes model
+7.  vibes model
 
 ```{r}
 spotify_lm7 <- lm(popularity ~ liveness + acousticness + danceability + energy + valence,
                   data = train_data)
 summary(spotify_lm7)
 ```
+
 ```{r}
 predicted_values7 <- predict(spotify_lm7, newdata = test_data)
 ```
-
-
 
 Finding RMSE for each linear model
 
@@ -384,8 +375,4 @@ sqrt(mean((predicted_values7-test_data$popularity)^2))
 
 ```
 
-Therefore, we can conclude that the first model [ everything -> popularity ]
-is the most successful linear model because it has the lowest RMSE -> 18.83656
-
-
-
+Therefore, we can conclude that the first model \[ everything -\> popularity \] is the most successful linear model because it has the lowest RMSE -\> 18.83656

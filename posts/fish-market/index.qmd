@@ -2,7 +2,7 @@
 title: "Fish Market"
 author: "Nikhita Purohit"
 format: html
-editor: visual
+editor: source
 date: "2026-03-17"
 categories: [Multiple Linear Regression]
 ---
@@ -203,15 +203,11 @@ test = data.frame(Average_Length = 30,
 predict(fish_lm, newdata = test)
 ```
 
-
-
 7.  **Summary of Inferences**
 
 This dataset contains three recordings of the length of each fish. I used the average of these lengths for the graphs. I checked the correlation of \[average length vs weight\], \[width vs weight\], and \[height vs weight\] and I found that there was no linear relation between any of them. However, I created a linear regression model of \[weight vs (average length, height and width)\] and the summary shows that it is very significant. The adjusted R\^2 value is closer to 1, thus proves that this linear regression model is successful. However, I was not able to plot the graph. On learning what the error was, I came to know that this was a multiple linear regression model and the syntax for the graph was incorrect.
 
-
-
-8. **Prediction using train and test data ** 
+8.  **Prediction using train and test data**
 
 ```{r}
 rows <- nrow(fish_avg_length)
@@ -234,15 +230,16 @@ test_data = fish_avg_length[-train_rows, ]
 ```{r}
 table(test_data$Species)
 ```
+
 ```{r}
 table(fish_avg_length$Species)
 ```
+
 ```{r}
 prop.table(table(fish_avg_length$Species))
 ```
 
-
-1. average length, height, width -> weight
+1.  average length, height, width -\> weight
 
 ```{r}
 
@@ -263,8 +260,7 @@ plot(predicted_values1, test_data$Weight,
 abline(a = 0, b = 1, col = "palevioletred", lwd = 2)
 ```
 
-
-2. average length -> weight
+2.  average length -\> weight
 
 ```{r}
 avgl_lm <- lm(Weight ~ Average_Length,
@@ -284,14 +280,14 @@ plot(predicted_values2, test_data$Weight,
 abline(a = 0, b = 1, col = "violet", lwd = 2)
 ```
 
-
-3. width -> weight
+3.  width -\> weight
 
 ```{r}
 w_lm <- lm(Weight ~ Width,
               data = train_data)
 summary(w_lm)
 ```
+
 ```{r}
 predicted_values3 <- predict(w_lm, newdata = test_data)
 ```
@@ -304,8 +300,7 @@ plot(predicted_values3, test_data$Weight,
 abline(a = 0, b = 1, col = "navy", lwd = 2)
 ```
 
-
-4. height -> weight
+4.  height -\> weight
 
 ```{r}
 h_lm <- lm(Weight ~ Height,
@@ -334,5 +329,4 @@ sqrt(mean((predicted_values3-test_data$Weight)^2))
 sqrt(mean((predicted_values4-test_data$Weight)^2))
 ```
 
-Therefore, we can conclude that the second model [ average length -> weight ]
-is the most successful linear model because it has the lowest RMSE -> 139.3819
+Therefore, we can conclude that the second model \[ average length -\> weight \] is the most successful linear model because it has the lowest RMSE -\> 139.3819

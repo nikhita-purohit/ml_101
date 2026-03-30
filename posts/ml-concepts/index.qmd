@@ -1,0 +1,103 @@
+---
+title: "Machine Learning Concepts"
+author: "Nikhita Purohit"
+format: html
+editor: source
+date: "2026-03-29"
+categories: [Concept Understanding]
+---
+
+![](images/clipboard-3263243994.png)
+
+The ML concepts that I understand and the ones that I don't fully understand
+
+# 
+
+### Concepts I Understand
+
+1.  Sampling data and adding a seed to make sure the sample doesn't change even after running the code again.
+
+2. Reading, cleaning, visualizing data
+
+3. Linear regression: y = mx + c, where y is the dependent variable, m is the slope, x is the independent variable, and c is the y intercept
+
+4. Least squares: technique used to find the best-fitting curve or line for a set of data points.
+They are squared in order to get positive values.
+The aim of least squares is to minimize the error.
+RSS- residual sum of squares
+RSS = e1^2 + e2^2 + e3^2 + ......... en^2
+where e is the difference between the regression value and the actual value
+TSS- total sum of squares
+TSS = 
+
+5. In the linear regression summary, a higher R^2 value is a sign that the model is accurate and good- captures more variance.
+R^2 = (TSS-RSS)/TSS
+
+
+
+6. Stars next to the values indicate significance.
+
+7. RMSE- root mean squared error = 
+
+
+### Concepts I Don't Fully Understand
+
+1. apply and tapply
+2. 
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+set.seed(30)
+sample(c("change","no-change"),10, replace = T)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

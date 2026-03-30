@@ -2,7 +2,7 @@
 title: "Bird Diversity"
 author: "Nikhita Purohit"
 format: html
-editor: visual
+editor: source
 date: "2026-03-17"
 categories: [Clustering]
 ---
@@ -191,3 +191,76 @@ gf_point(`Breeding range size` ~ `Body mass`, data = bird_modified, color = 'blu
           y = "Breeding Range Size")
 
 ```
+
+
+6.  **Logistic Regression**
+
+```{r}
+levels(bird_modified$`Migratory status`)
+```
+```{r}
+set.seed(1105)
+split <- initial_split(bird_modified, prop = 0.7, strata = "Migratory status")
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+
+```{r}
+bird_glm <- glm(`Migratory status` ~ Heterozygosity + `Allelic richness` + `Breeding range size`+ `Body mass` + Latitude,
+                  data = train_data,
+                  family = binomial)
+
+summary(bird_glm)
+```
+
+```{r}
+bird_glm2 <- glm(`Migratory status` ~ `Breeding range size`+ `Body mass` + Latitude,
+                  data = train_data,
+                  family = binomial)
+
+summary(bird_glm2)
+```
+
+```{r}
+bird_glm3 <- glm(`Migratory status` ~ `Breeding range size`+ `Body mass`,
+                  data = train_data,
+                  family = binomial)
+
+summary(bird_glm3)
+```
+
+```{r}
+bird_glm4 <- glm(`Migratory status` ~ ,
+                  data = train_data,
+                  family = binomial)
+
+summary(bird_glm4)
+```
+
+
+bird_glm2 has the lowest AIC value of 317.74. Thus, that is the most suitable model.
+
+
+```{r}
+pred_prob1 <- predict(bird_glm2, newdata = test_data, type = "response")
+pred_prob1
+hist(pred_prob1)
+plot(pred_prob1, test_data$`Migratory status`)
+```
+
+```{r}
+nrow(test_data)
+pred_class1 <- rep("guava",33)
+pred_class1[pred_prob1 > 0.5] <- "orange"
+```
+
+
+
+
+
+
+
+
+
+
