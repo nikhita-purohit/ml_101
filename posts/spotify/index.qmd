@@ -17,7 +17,9 @@ categories: [Linear Regression]
 
 The data set looks at Spotify Song features
 
-### **Objective:** To analyze and explore Spotify audio features to understand the characteristics and patterns present in different songs.
+### **Objective:** 
+
+To analyze and explore Spotify audio features to understand the characteristics and patterns present in different songs.
 
 ### **1. Setting up R Packages**
 

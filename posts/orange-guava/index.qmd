@@ -17,7 +17,9 @@ categories: [Logistic Regression]
 
 This model accepts data and predicts if the fruit is an orange or a guava
 
-### **Objective:** The aim of this model is to accept variables from the user such as pole to pole measurement, circumference, weight etc of a fruit and predict whether it is an orange or a guava using logistic regression.
+### **Objective:**
+
+The aim of this model is to accept variables from the user such as pole to pole measurement, circumference, weight etc of a fruit and predict whether it is an orange or a guava using logistic regression.
 
 ### **1. Setting up R Packages**
 
@@ -41,7 +43,7 @@ library(rsample)
 fruit <- readr::read_csv("../../data/oranges_or_guavas.csv", show_col_types = FALSE)
 ```
 
-###  **3. Examining and Cleaning Data**
+### **3. Examining and Cleaning Data**
 
 ```{r}
 dim(fruit)
@@ -88,6 +90,7 @@ fruit_modified %>%
     fontSize = "12px",
   )
 ```
+
 ### **4. Data Dictionary**
 
 **Quantitative Data**
@@ -105,7 +108,8 @@ fruit_modified %>%
 ```{r}
 summary(fruit_modified)
 ```
-###  **5. Graphs**
+
+### **5. Graphs**
 
 ```{r}
 gf_bar(~ fruit, data = fruit_modified, fill = ~ fruit) %>%
@@ -153,6 +157,7 @@ fruit_modified$fruit <- as.factor(fruit_modified$fruit)
 ```{r}
 levels(fruit_modified$fruit)
 ```
+
 prop- proportion - 70% training, 30% testing strata- fruit- to make sure the training and testing sets have a balanced mix of guavas and oranges
 
 ```{r}
@@ -193,12 +198,14 @@ nrow(test_data)
 pred_class1 <- rep("guava",33)
 pred_class1[pred_prob1 > 0.5] <- "orange"
 ```
+
 ```{r}
 table(Actual = test_data$fruit, Predicted = pred_class1)
 
 summary(fruit_glm)
 ```
-###  **7. Predicting Model**
+
+### **7. Predicting Model**
 
 ```{r}
 unknown_fruit <- data.frame(
@@ -213,7 +220,4 @@ prob_pred2
 
 Thus, we can conclude that the unknown fruit was a guava
 
-
 ### **8. Summary**
-
-

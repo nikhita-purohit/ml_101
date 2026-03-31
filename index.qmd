@@ -1,5 +1,4 @@
 ---
-title: "Machine Learning 101"
 listing:
   contents: posts
   sort: "date desc"

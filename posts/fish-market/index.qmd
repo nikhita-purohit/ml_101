@@ -17,7 +17,9 @@ categories: [Linear Regression, Clustering]
 
 Estimate the weight of a fish based on its species and the physical measurements
 
-### **Objective:** The fish market dataset is a collection of data related to various species of fish and their characteristics. This dataset is designed for polynomial regression analysis and contains several columns with specific information.
+### **Objective:** 
+
+The fish market dataset is a collection of data related to various species of fish and their characteristics. This dataset is designed for polynomial regression analysis and contains several columns with specific information.
 
 ### **1. Setting up R Packages**
 

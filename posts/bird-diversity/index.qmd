@@ -17,7 +17,9 @@ categories: [Logistic Regression, Clustering]
 
 Bird genetic diversity study of 387 bird species
 
-**Objective:** Ecologists and evolutionary biologists have long investigated links between diversity and geography. For example, as the area of a habitat increases, the number of different species found within it increases—a seemingly obvious finding, but the exact shape of the relationship has been found to relate to the rates of immigration and extinction in the habitat, predator-prey behaviors, and so on.
+### **Objective:** 
+
+Ecologists and evolutionary biologists have long investigated links between diversity and geography. For example, as the area of a habitat increases, the number of different species found within it increases—a seemingly obvious finding, but the exact shape of the relationship has been found to relate to the rates of immigration and extinction in the habitat, predator-prey behaviors, and so on.
 
 A similar relationship would seem likely to exist within a species. A species that lives over a small area might have low genetic diversity, because individuals frequently interbreed and there is little opportunity for some individuals to evolve separately from others. A species that lives over a wide area might have high genetic diversity, both because the varied habitat in which it lives means different individuals experience different natural selection pressures, and because individuals far apart may never be able to interbreed.
 

@@ -1,103 +1,48 @@
 ---
 title: "Machine Learning Concepts"
 author: "Nikhita Purohit"
-format: html
-editor: source
 date: "2026-03-29"
+format: html
 categories: [Concept Understanding]
+editor: source
 ---
 
-![](images/clipboard-3263243994.png)
+------------------------------------------------------------------------
 
-The ML concepts that I understand and the ones that I don't fully understand
-
-# 
+![](images/clipboard-3240568454.png)The ML concepts that I understand and the ones that I don't fully understand
 
 ### Concepts I Understand
 
 1.  Sampling data and adding a seed to make sure the sample doesn't change even after running the code again.
 
-2. Reading, cleaning, visualizing data
+2.  Reading, cleaning, visualizing data
 
-3. Linear regression: y = mx + c, where y is the dependent variable, m is the slope, x is the independent variable, and c is the y intercept
+3.  Linear regression: y = mx + c, where y is the dependent variable, m is the slope, x is the independent variable, and c is the y intercept
 
-4. Least squares: technique used to find the best-fitting curve or line for a set of data points.
-They are squared in order to get positive values.
-The aim of least squares is to minimize the error.
-RSS- residual sum of squares
-RSS = e1^2 + e2^2 + e3^2 + ......... en^2
-where e is the difference between the regression value and the actual value
-TSS- total sum of squares
-TSS = 
+4.  Least squares: technique used to find the best-fitting curve or line for a set of data points. They are squared in order to get positive values. The aim of least squares is to minimize the error. RSS- residual sum of squares RSS = e1\^2 + e2\^2 + e3\^2 + ......... en\^2 where e is the difference between the regression value and the actual value TSS- total sum of squares TSS =
 
-5. In the linear regression summary, a higher R^2 value is a sign that the model is accurate and good- captures more variance.
-R^2 = (TSS-RSS)/TSS
+5.  In the linear regression summary, a higher R\^2 value is a sign that the model is accurate and good- captures more variance. R\^2 = (TSS-RSS)/TSS
 
+6.  Stars next to the values indicate significance.
 
+7.  RMSE- root mean squared error - find the mean of the difference squared- and square root it The model with the least RMSE is the best model/ most accurate model
 
-6. Stars next to the values indicate significance.
+8.  Creating custom functions
 
-7. RMSE- root mean squared error = 
+9.  Logistic regression uses glm - generalised linear model - binomial. Linear regression uses lm - if you use glm - gaussian
 
+10. If you have multiple logistic regression models, lowest AIC value - best / more accurate model
+
+11. type = "response" gives the probability
+
+12. Confusion matrix -\> actual vs predicted values
+
+13. Clustering iter.max- keep repeating the process 15 times wss- within sum of squares tot.withinss- means total error map is a function from purr it takes the k values 1 to 15 and uses it in the function wss
+
+14. (between_SS / total_SS) if it's usually 70% and above that means it's a good model and was able to capture a lot of variance
 
 ### Concepts I Don't Fully Understand
 
-1. apply and tapply
-2. 
+1.  apply and tapply
 
-
-
-
-
-
-
-
-
-
-
-
-```{r}
-set.seed(30)
-sample(c("change","no-change"),10, replace = T)
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+2.  I understand how to interpret the results after a kmeans test, but I don't fully understand what each line of code does.

@@ -18,7 +18,9 @@ categories: [Linear Regression]
 A dataset on daily step count and weight loss
 [Discarded - too many errors]
 
-### **Objective:** The motivation for gathering this dataset was personal, with the goal of answering a simple question: "Impact of Daily Step Count on Weight Loss Journey?" \# \#
+### **Objective:** 
+
+The motivation for gathering this dataset was personal, with the goal of answering a simple question: "Impact of Daily Step Count on Weight Loss Journey?"
 
 ### **1. Setting up R Packages**
 
