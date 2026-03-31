@@ -1,23 +1,25 @@
 ---
 title: "Fish Market"
 author: "Nikhita Purohit"
-format: html
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-title: "On this page"
+    toc-depth: 3
+    smooth-scroll: true
 editor: source
-date: "2026-03-17"
-categories: [Multiple Linear Regression]
+date: "2026-03-18"
+categories: [Linear Regression, Clustering]
 ---
 
 ![](images/clipboard-131266574.png)
 
 Estimate the weight of a fish based on its species and the physical measurements
 
-# 
+### **Objective:** The fish market dataset is a collection of data related to various species of fish and their characteristics. This dataset is designed for polynomial regression analysis and contains several columns with specific information.
 
-# 
-
-**Objective:** The fish market dataset is a collection of data related to various species of fish and their characteristics. This dataset is designed for polynomial regression analysis and contains several columns with specific information. \# \#
-
-1.  **Setting up R Packages**
+### **1. Setting up R Packages**
 
 ```{r}
 #| message: false
@@ -32,13 +34,13 @@ library(naniar)
 library(visdat)
 ```
 
-2.  **Reading Data**
+### **2. Reading Data**
 
 ```{r}
 fish <- readr::read_csv("../../data/Fish.csv", show_col_types = FALSE)
 ```
 
-3.  **Examining and Cleaning Data**
+### **3. Examining and Cleaning Data**
 
 ```{r}
 dim(fish)
@@ -86,11 +88,7 @@ fish_modified %>%
   )
 ```
 
-# 
-
-# 
-
-4.  **Data Dictionary**
+### **4. Data Dictionary**
 
 **Quantitative Data**
 
@@ -109,7 +107,7 @@ fish_modified %>%
 summary(fish)
 ```
 
-5.  **Graphs**
+### **5. Graphs**
 
 ```{r}
 fish_modified %>%
@@ -193,7 +191,7 @@ summary(fish_lm)
 #           y = "Weight (grams)")
 ```
 
-6.  **Predicting Model**
+### **6. Predicting Model**
 
 ```{r}
 test = data.frame(Average_Length = 30,
@@ -202,12 +200,7 @@ test = data.frame(Average_Length = 30,
 
 predict(fish_lm, newdata = test)
 ```
-
-7.  **Summary of Inferences**
-
-This dataset contains three recordings of the length of each fish. I used the average of these lengths for the graphs. I checked the correlation of \[average length vs weight\], \[width vs weight\], and \[height vs weight\] and I found that there was no linear relation between any of them. However, I created a linear regression model of \[weight vs (average length, height and width)\] and the summary shows that it is very significant. The adjusted R\^2 value is closer to 1, thus proves that this linear regression model is successful. However, I was not able to plot the graph. On learning what the error was, I came to know that this was a multiple linear regression model and the syntax for the graph was incorrect.
-
-8.  **Prediction using train and test data**
+### **7. Prediction using train and test data**
 
 ```{r}
 rows <- nrow(fish_avg_length)
@@ -329,4 +322,87 @@ sqrt(mean((predicted_values3-test_data$Weight)^2))
 sqrt(mean((predicted_values4-test_data$Weight)^2))
 ```
 
-Therefore, we can conclude that the second model \[ average length -\> weight \] is the most successful linear model because it has the lowest RMSE -\> 139.3819
+Therefore, we can conclude that the second model \[ average length -\> weight \] is the most successful linear model because it has the lowest RMSE.
+
+### **8. Clustering**
+
+```{r}
+names(fish_avg_length)
+```
+```{r}
+cols_for_clustering <- c("Weight", "Height", "Width", "Average_Length")
+df <- fish_avg_length[, cols_for_clustering]
+fish_scaled <- scale(df)
+```
+
+```{r}
+kmeans(fish_scaled, 2, nstart = 30)
+```
+
+```{r}
+wss <- function(k) {
+  set.seed(1105)
+  kmeans(fish_scaled, k, nstart = 30)$tot.withinss
+}
+```
+
+```{r}
+k_values <- 1:15
+```
+
+```{r}
+wss_values <- map_dbl(k_values, wss)
+```
+
+```{r}
+plot(k_values, wss_values,
+     type="b", pch = 19, frame = FALSE, 
+     xlab="Number of clusters K",
+     ylab="Total within-clusters sum of squares")
+```
+
+```{r}
+dim(fish_scaled)
+```
+
+```{r}
+set.seed(1105)
+
+final <- kmeans(fish_scaled, 6, iter.max = 10, nstart = 30)
+final
+```
+
+```{r}
+final$size
+```
+
+```{r}
+final$cluster
+final
+```
+
+```{r}
+names(df)
+```
+
+```{r}
+df$Species <- fish_avg_length$Species
+df$Cluster <- final$cluster
+```
+
+```{r}
+table(df$Cluster)
+```
+
+```{r}
+names(df)
+```
+
+```{r}
+df <- select(df, Cluster, Species, Height, Weight, Width, Average_Length)
+aggregate(. ~ Cluster, df[, c(1,3,4,5,6)], function(x) round(mean(x)))
+```
+
+### **9. Summary**
+
+This dataset contains three recordings of the length of each fish. I used the average of these lengths for the graphs. I checked the correlation of \[average length vs weight\], \[width vs weight\], and \[height vs weight\] and I found that there was no linear relation between any of them. However, I created a linear regression model of \[weight vs (average length, height and width)\] and the summary shows that it is very significant. The adjusted R\^2 value is closer to 1, thus proves that this linear regression model is successful. However, I was not able to plot the graph. On learning what the error was, I came to know that this was a multiple linear regression model and the syntax for the graph was incorrect.

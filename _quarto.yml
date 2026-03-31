@@ -1,16 +1,23 @@
 project:
   type: website
+  # This line prevents Quarto from looking for old .rmarkdown files
+  output-dir: _site
 
 website:
   title: "Machine Learning 101"
   navbar:
+    background: "#d9534f" # This matches your red header
     right:
       - icon: github
         href: https://github.com/
       - icon: twitter
         href: https://twitter.com
+
 format:
   html:
     theme: journal
+    mainfont: "News Cycle, sans-serif" # The Journal theme font
+    # This forces the sidebar to match the theme font
+    css: styles.css 
 
 editor: visual

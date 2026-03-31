@@ -1,27 +1,29 @@
 ---
 title: "Bird Diversity"
 author: "Nikhita Purohit"
-format: html
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-title: "On this page"
+    toc-depth: 3
+    smooth-scroll: true
 editor: source
-date: "2026-03-17"
-categories: [Clustering]
+date: "2026-03-18"
+categories: [Logistic Regression, Clustering]
 ---
 
 ![](images/clipboard-3211494284.png)
 
 Bird genetic diversity study of 387 bird species
 
-# 
-
-# 
-
 **Objective:** Ecologists and evolutionary biologists have long investigated links between diversity and geography. For example, as the area of a habitat increases, the number of different species found within it increases—a seemingly obvious finding, but the exact shape of the relationship has been found to relate to the rates of immigration and extinction in the habitat, predator-prey behaviors, and so on.
 
 A similar relationship would seem likely to exist within a species. A species that lives over a small area might have low genetic diversity, because individuals frequently interbreed and there is little opportunity for some individuals to evolve separately from others. A species that lives over a wide area might have high genetic diversity, both because the varied habitat in which it lives means different individuals experience different natural selection pressures, and because individuals far apart may never be able to interbreed.
 
-The exact nature of this relationship could be used to test hypotheses about evolution and natural selection. This dataset comes from a paper that explored the relationship in birds, which have widely varying geographic ranges and hence could be a good group to work with. \# \#
+The exact nature of this relationship could be used to test hypotheses about evolution and natural selection. This dataset comes from a paper that explored the relationship in birds, which have widely varying geographic ranges and hence could be a good group to work with.
 
-1.  **Setting up R Packages**
+### **1. Setting up R Packages**
 
 ```{r}
 #| message: false
@@ -34,15 +36,16 @@ library(ggformula)
 library(janitor)
 library(naniar)
 library(visdat)
+library(rsample)
 ```
 
-2.  **Reading Data**
+### **2. Reading Data**
 
 ```{r}
 bird <- readr::read_csv("../../data/bird-diversity.csv", show_col_types = FALSE)
 ```
 
-3.  **Examining and Cleaning Data**
+### **3. Examining and Cleaning Data**
 
 ```{r}
 dim(bird)
@@ -90,11 +93,7 @@ bird_modified %>%
   )
 ```
 
-# 
-
-# 
-
-4.  **Data Dictionary**
+### **4. Data Dictionary**
 
 **Quantitative Data**
 
@@ -115,7 +114,7 @@ bird_modified %>%
 summary(bird)
 ```
 
-5.  **Graphs**
+### **5. Graphs**
 
 ```{r}
 bird %>%
@@ -192,19 +191,18 @@ gf_point(`Breeding range size` ~ `Body mass`, data = bird_modified, color = 'blu
 
 ```
 
-
-6.  **Logistic Regression**
+### **6. Logistic Regression**
 
 ```{r}
 levels(bird_modified$`Migratory status`)
 ```
+
 ```{r}
 set.seed(1105)
 split <- initial_split(bird_modified, prop = 0.7, strata = "Migratory status")
 train_data <- training(split)
 test_data <- testing(split)
 ```
-
 
 ```{r}
 bird_glm <- glm(`Migratory status` ~ Heterozygosity + `Allelic richness` + `Breeding range size`+ `Body mass` + Latitude,
@@ -231,16 +229,14 @@ summary(bird_glm3)
 ```
 
 ```{r}
-bird_glm4 <- glm(`Migratory status` ~ ,
+bird_glm4 <- glm(`Migratory status` ~ `Breeding range size`,
                   data = train_data,
                   family = binomial)
 
 summary(bird_glm4)
 ```
 
-
 bird_glm2 has the lowest AIC value of 317.74. Thus, that is the most suitable model.
-
 
 ```{r}
 pred_prob1 <- predict(bird_glm2, newdata = test_data, type = "response")
@@ -251,16 +247,107 @@ plot(pred_prob1, test_data$`Migratory status`)
 
 ```{r}
 nrow(test_data)
-pred_class1 <- rep("guava",33)
-pred_class1[pred_prob1 > 0.5] <- "orange"
+pred_class1 <- rep("Migratory",117)
+pred_class1[pred_prob1 > 0.5] <- "Resident"
 ```
 
+```{r}
+levels(bird_modified$`Migratory status`)
+```
+
+```{r}
+table(Actual = test_data$`Migratory status`, Predicted = pred_class1)
+
+summary(bird_glm2)
+```
+
+### **7. Prediction Model**
 
 
+```{r}
+new_bird <- data.frame(
+  "Breeding range size" = 500,
+  "Body mass" = 480,
+  Latitude = 40,
+  check.names = FALSE
+)
 
+predictmodel <- predict(bird_glm2, newdata = new_bird, type = "response")
+predictmodel
+```
 
+There is a 61% chance that the bird is a migratory bird.
 
+### **8. Clustering**
 
+```{r}
+cols_for_clustering <- c("Heterozygosity", "Allelic richness", "Breeding range size", "Body mass")
+df <- bird_modified[, cols_for_clustering]
+bird_scaled <- scale(df)
+```
 
+```{r}
+kmeans(bird_scaled, 2, nstart = 30)
+```
 
+```{r}
+wss <- function(k) {
+  set.seed(1105)
+  kmeans(bird_scaled, k, nstart = 30)$tot.withinss
+}
+```
 
+```{r}
+k_values <- 1:15
+```
+
+```{r}
+wss_values <- map_dbl(k_values, wss)
+```
+
+```{r}
+plot(k_values, wss_values,
+     type="b", pch = 19, frame = FALSE, 
+     xlab="Number of clusters K",
+     ylab="Total within-clusters sum of squares")
+```
+
+```{r}
+set.seed(1105)
+
+final <- kmeans(bird_scaled, 12, iter.max = 10, nstart = 30)
+final
+```
+
+```{r}
+final$size
+```
+
+```{r}
+final$cluster
+final
+```
+
+```{r}
+names(df)
+```
+
+```{r}
+df$Species <- bird$Species
+df$Cluster <- final$cluster
+```
+
+```{r}
+table(df$Cluster)
+```
+
+```{r}
+names(df)
+```
+
+```{r}
+df <- select(df, Cluster, Species, Heterozygosity, `Allelic richness`, `Breeding range size`, `Body mass`)
+aggregate(. ~ Cluster, df[, c(1,4,5,6)], function(x) round(mean(x)))
+```
+
+### **9. Summary**

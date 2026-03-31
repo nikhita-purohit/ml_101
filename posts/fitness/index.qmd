@@ -1,23 +1,26 @@
 ---
 title: "Steps Count for Fitness Journey"
 author: "Nikhita Purohit"
-format: html
-editor: visual
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-title: "On this page"
+    toc-depth: 3
+    smooth-scroll: true
+editor: source
 date: "2026-03-17"
 categories: [Linear Regression]
 ---
 
 ![](images/clipboard-3654824570.png)
 
-\[ Discarded because of too many errors\]
+A dataset on daily step count and weight loss
+[Discarded - too many errors]
 
-# 
+### **Objective:** The motivation for gathering this dataset was personal, with the goal of answering a simple question: "Impact of Daily Step Count on Weight Loss Journey?" \# \#
 
-# 
-
-**Objective:** The motivation for gathering this dataset was personal, with the goal of answering a simple question: "Impact of Daily Step Count on Weight Loss Journey?" \# \#
-
-1.  **Setting up R Packages**
+### **1. Setting up R Packages**
 
 ```{r}
 #| message: false
@@ -32,13 +35,13 @@ library(naniar)
 library(visdat)
 ```
 
-2.  **Reading Data**
+### **2. Reading Data**
 
 ```{r}
 step <- readr::read_csv("../../data/Steps Export_ 3-17-21to9-23-22.csv", show_col_types = FALSE)
 ```
 
-3.  **Examining and Cleaning Data**
+### **3. Examining and Cleaning Data**
 
 ```{r}
 dim(step)
@@ -86,11 +89,7 @@ step_modified %>%
   )
 ```
 
-# 
-
-# 
-
-4.  **Data Dictionary**
+### **4. Data Dictionary**
 
 **Quantitative Data**
 
@@ -147,7 +146,7 @@ step_modified <- step_modified %>%
            as.numeric(as.character(`Distance Travelled`)))
 ```
 
-5.  **Graphs**
+### **5. Graphs**
 
 ```{r}
 step_modified %>%

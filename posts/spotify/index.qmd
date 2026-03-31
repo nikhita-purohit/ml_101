@@ -1,9 +1,15 @@
 ---
 title: "Spotify"
 author: "Nikhita Purohit"
-format: html
-editor: visual
 date: "2026-03-18"
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-title: "On this page"
+    toc-depth: 3
+    smooth-scroll: true
+editor: source
 categories: [Linear Regression]
 ---
 
@@ -11,13 +17,9 @@ categories: [Linear Regression]
 
 The data set looks at Spotify Song features
 
-# 
+### **Objective:** To analyze and explore Spotify audio features to understand the characteristics and patterns present in different songs.
 
-# 
-
-**Objective:** To analyze and explore Spotify audio features to understand the characteristics and patterns present in different songs.
-
-1.  **Setting up R Packages**
+### **1. Setting up R Packages**
 
 ```{r}
 #| message: false
@@ -32,13 +34,13 @@ library(naniar)
 library(visdat)
 ```
 
-2.  **Reading Data**
+### **2. Reading Data**
 
 ```{r}
 song <- readr::read_csv("../../data/SpotifySongPolularityAPIExtract.csv", show_col_types = FALSE)
 ```
 
-3.  **Examining and Cleaning Data**
+### **3. Examining and Cleaning Data**
 
 ```{r}
 dim(song)
@@ -81,11 +83,7 @@ song_modified %>%
   )
 ```
 
-# 
-
-# 
-
-4.  **Data Dictionary**
+### **4. Data Dictionary**
 
 **Quantitative Data**
 
@@ -114,7 +112,7 @@ song_modified %>%
 summary(song)
 ```
 
-5.  **Graphs**
+### **5. Graphs**
 
 ```{r}
 song_modified %>%
@@ -232,7 +230,7 @@ popularity_vs_lid_lm
 summary(popularity_vs_lid_lm)
 ```
 
-6.  **Predicting Model**
+### **6. Predicting Model**
 
 ```{r}
 test1 = data.frame(loudness = -10.08)
@@ -248,11 +246,7 @@ test2 = data.frame(loudness = -9.008,
 predict(popularity_vs_lid_lm, newdata = test2)
 ```
 
-7.  **Summary of Inferences**
-
-I found this dataset interesting because I never knew how many factors affect the success of a song. I converted duration from milliseconds to minutes. Made me question why they even recorded it in milliseconds because it is so hard to compare it that way. Tempo and popularity showed a very slight linear relation, so I discarded it. Popularity vs duration showed a slight inverse relation, showing that longer songs aren't as popular. Popularity vs loudness showed a significant linear relation so I built the first model using this. I also tried creating a model of \[popularity vs (loudness, instrumentalness and danceability)\]. The adjusted R\^2 values of both models are pretty low but the second model proves to be more accurate than the first.
-
-8.  **Prediction using train and test data**
+### **7. Prediction using train and test data**
 
 ```{r}
 rows <- nrow(song_modified_minutes)
@@ -375,4 +369,8 @@ sqrt(mean((predicted_values7-test_data$popularity)^2))
 
 ```
 
-Therefore, we can conclude that the first model \[ everything -\> popularity \] is the most successful linear model because it has the lowest RMSE -\> 18.83656
+Therefore, we can conclude that the first model \[ everything -\> popularity \] is the most successful linear model because it has the lowest RMSE.
+
+### **8. Summary**
+
+I found this dataset interesting because I never knew how many factors affect the success of a song. I converted duration from milliseconds to minutes. Made me question why they even recorded it in milliseconds because it is so hard to compare it that way. Tempo and popularity showed a very slight linear relation, so I discarded it. Popularity vs duration showed a slight inverse relation, showing that longer songs aren't as popular. Popularity vs loudness showed a significant linear relation so I built the first model using this. I also tried creating a model of \[popularity vs (loudness, instrumentalness and danceability)\]. The adjusted R\^2 values of both models are pretty low but the second model proves to be more accurate than the first.

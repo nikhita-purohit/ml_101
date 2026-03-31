@@ -1,28 +1,27 @@
 ---
 title: "Lake Placid Women’s Ironman Triathlon"
 author: "Nikhita Purohit"
+date: "2026-03-17"
 format:
   html:
     toc: true
-    toc-location: left  # Or 'right'
+    toc-location: left
+    toc-title: "On this page"
     toc-depth: 3
     smooth-scroll: true
 editor: source
-date: "2026-03-17"
 categories: [Linear Regression]
 ---
 
 ![](images/clipboard-992671367.png)
 
-The data set looks at female participants in the triathlon Ironman
+The data set looks at female participants in the triathlon Iron-man
 
-# 
+### **Objective:**
 
-# 
+The motivation for this data analysis is to explore the relationships between swim times, bike times, and run times (in minutes) in order to gain insights into the performance patterns of the athletes. By analyzing these relationships, we can understand the interplay between different segments of the race and potentially identify areas of improvement for athletes.
 
-**Objective:** The motivation for this data analysis is to explore the relationships between swim times, bike times, and run times (in minutes) in order to gain insights into the performance patterns of the athletes. By analyzing these relationships, we can understand the interplay between different segments of the race and potentially identify areas of improvement for athletes. \# \#
-
-1.  **Setting up R Packages**
+### 1. **Setting up R Packages**
 
 ```{r}
 #| message: false
@@ -37,13 +36,13 @@ library(naniar)
 library(visdat)
 ```
 
-2.  **Reading Data**
+### 2. **Reading Data**
 
 ```{r}
 iron <- readr::read_csv("../../data/ironman_lake_placid_female_2022.csv", show_col_types = FALSE)
 ```
 
-3.  **Examining and Cleaning Data**
+### 3. **Examining and Cleaning Data**
 
 ```{r}
 dim(iron)
@@ -91,11 +90,7 @@ iron_modified %>%
   )
 ```
 
-# 
-
-# 
-
-4.  **Data Dictionary**
+### 4. **Data Dictionary**
 
 **Quantitative Data**
 
@@ -124,7 +119,7 @@ iron_modified %>%
 summary(iron_modified)
 ```
 
-5.  **Graphs**
+### 5. **Graphs**
 
 ```{r}
 iron_modified %>%
@@ -251,7 +246,7 @@ iron_modified %>%
 summary(run_vs_overall_lm)
 ```
 
-6.  **Predicting Model**
+### 6. **Predicting Model**
 
 ```{r}
 test = data.frame(Bike.Time = 300)
@@ -265,11 +260,7 @@ test = data.frame(Run.Time = 250)
 predict(run_vs_overall_lm, newdata = test)
 ```
 
-7.  **Summary of Inferences**
-
-The Ironman triathlon is held in this particular order- swimming, biking, and finally running. The order as well as the distance of these sports highly affects the data. In this dataset, the graphs for run completion times and bike completion times are normal data distributions. However, the graph for swim completion times is very odd. Almost every participant has completed the swim around the same time. On checking the correlation of different attributes, I found that the relation between \[run time and overall time\] and \[bike time and overall time\] were linear, so I used them to make two prediction models. Swim time was not so helpful.
-
-8.  **Prediction using train and test data**
+### 7. **Prediction using train and test data**
 
 ```{r}
 rows <- nrow(iron_modified)
@@ -402,4 +393,8 @@ sqrt(mean((predicted_values6-test_data$Overall.Time)^2))
 sqrt(mean((predicted_values7-test_data$Overall.Time)^2))
 ```
 
-Therefore, we can conclude that the fifth model \[ bike + run -\> overall \] is the most successful linear model because it has the lowest RMSE -\> 10.2388
+Therefore, we can conclude that the fifth model \[ bike + run -\> overall \] is the most successful linear model because it has the lowest RMSE.
+
+### 8. **Summary**
+
+The Ironman triathlon is held in this particular order- swimming, biking, and finally running. The order as well as the distance of these sports highly affects the data. In this dataset, the graphs for run completion times and bike completion times are normal data distributions. However, the graph for swim completion times is very odd. Almost every participant has completed the swim around the same time. On checking the correlation of different attributes, I found that the relation between \[run time and overall time\] and \[bike time and overall time\] were linear, so I used them to make two prediction models. Swim time was not so helpful. Finally, the fifth model \[ bike + run -\> overall \] was the most successful linear model because it has the lowest RMSE.
