@@ -220,4 +220,3 @@ prob_pred2
 
 Thus, we can conclude that the unknown fruit was a guava
 
-### **8. Summary**

@@ -238,7 +238,7 @@ bird_glm4 <- glm(`Migratory status` ~ `Breeding range size`,
 summary(bird_glm4)
 ```
 
-bird_glm2 has the lowest AIC value of 317.74. Thus, that is the most suitable model.
+bird_glm2 has the lowest AIC value. Thus, that is the most suitable model.
 
 ```{r}
 pred_prob1 <- predict(bird_glm2, newdata = test_data, type = "response")
@@ -353,3 +353,6 @@ aggregate(. ~ Cluster, df[, c(1,4,5,6)], function(x) round(mean(x)))
 ```
 
 ### **9. Summary**
+
+For this dataset, I applied logistic regression as well as clustering. First, I used logistic regression to predict the migratory status of a bird - migratory or resident. I made 4 bird_glms with different attributes based on their significance in the summaries. bird_glm2, being the best model, had the lowest AIC value. I also clustered the data into 10 clusters based on the elbow points in the graph. (between_SS / total_SS =  82.0 %)
+From these clusters I understood that cluster 3 and 10 have the largest breeding range sizes but cluster 3 has high body mass unlike cluster 10. Cluster 7 birds have high allelic richness but very low body mass. Cluster 1 has high body mass but relatively small breeding range size. Cluster 9 has an average allelic richness of 21 which is double that of other clusters.
